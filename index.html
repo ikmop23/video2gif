@@ -1,0 +1,172 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <meta name="theme-color" content="#f7f8fc">
+  <meta name="description" content="動画をブラウザ内だけでGIFに変換。動画ファイルはアップロードされません。">
+  <title>GIF Maker — ブラウザだけで動画をGIFに</title>
+  <link rel="stylesheet" href="./style.css">
+  <script src="./app.js" defer></script>
+</head>
+<body>
+  <main class="page-shell">
+    <header class="site-header">
+      <a class="brand" href="./" aria-label="GIF Maker ホーム">
+        <span class="brand-mark" aria-hidden="true">GIF</span>
+        <span>GIF Maker</span>
+      </a>
+      <span class="header-note">No upload · No extra library</span>
+    </header>
+
+    <section class="hero">
+      <p class="eyebrow">PRIVATE VIDEO CONVERTER</p>
+      <h1>動画を、ブラウザだけでGIFに。</h1>
+      <p class="hero-copy">動画を選んで設定するだけ。変換処理はこの端末のブラウザ内で完結します。</p>
+      <div class="privacy-line">
+        <span class="privacy-dot" aria-hidden="true"></span>
+        動画ファイルはサーバーに送信されません
+      </div>
+    </section>
+
+    <section class="panel upload-panel" aria-labelledby="upload-title">
+      <div class="section-heading">
+        <div>
+          <p class="step-label">STEP 1</p>
+          <h2 id="upload-title">動画を選択</h2>
+        </div>
+        <span class="heading-hint">MP4 / MOV など</span>
+      </div>
+
+      <label class="file-drop" id="drop-area" for="video-file">
+        <span class="upload-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none"><path d="M12 16V4m0 0L7.5 8.5M12 4l4.5 4.5M4 15.5v3A1.5 1.5 0 0 0 5.5 20h13a1.5 1.5 0 0 0 1.5-1.5v-3" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </span>
+        <span class="drop-title">タップして動画を選ぶ</span>
+        <span class="drop-subtitle">または、ここに動画をドロップ</span>
+        <input id="video-file" type="file" accept="video/*,.mp4,.mov,.m4v,.webm" aria-label="変換する動画を選択">
+      </label>
+
+      <div class="video-area hidden" id="video-area">
+        <video id="source-video" controls playsinline preload="metadata"></video>
+        <div class="file-details">
+          <div class="file-name" id="file-name"></div>
+          <div class="file-meta" id="file-meta"></div>
+          <button class="text-button" type="button" id="change-file">別の動画を選ぶ</button>
+        </div>
+      </div>
+      <p class="support-note">※ 変換できる形式は、このブラウザが再生できる動画形式に限られます。</p>
+    </section>
+
+    <section class="panel settings-panel" aria-labelledby="settings-title">
+      <div class="section-heading">
+        <div>
+          <p class="step-label">STEP 2</p>
+          <h2 id="settings-title">GIFの設定</h2>
+        </div>
+        <span class="heading-hint">あとから変更できます</span>
+      </div>
+
+      <div class="settings-grid">
+        <div class="setting-block setting-wide">
+          <label class="setting-title" for="trim-start">切り取り範囲 <span>開始〜終了</span></label>
+          <div class="range-inputs">
+            <label class="number-field"><span>開始（秒）</span><input id="trim-start" type="number" min="0" step="0.1" value="0" inputmode="decimal"></label>
+            <span class="range-separator">〜</span>
+            <label class="number-field"><span>終了（秒）</span><input id="trim-end" type="number" min="0" step="0.1" placeholder="動画の最後" inputmode="decimal"></label>
+          </div>
+          <p class="field-help">指定した範囲だけをGIFにします。</p>
+        </div>
+
+        <div class="setting-block">
+          <label class="setting-title" for="max-edge">出力サイズ <span>最大辺</span></label>
+          <select id="max-edge">
+            <option value="320">320 px（軽量）</option>
+            <option value="480" selected>480 px（標準）</option>
+            <option value="640">640 px（大きめ）</option>
+            <option value="800">800 px（高解像度）</option>
+          </select>
+        </div>
+
+        <div class="setting-block">
+          <label class="setting-title" for="fps">フレームレート</label>
+          <select id="fps">
+            <option value="6">6 FPS</option>
+            <option value="8">8 FPS</option>
+            <option value="10">10 FPS</option>
+            <option value="12" selected>12 FPS</option>
+            <option value="15">15 FPS</option>
+            <option value="20">20 FPS</option>
+          </select>
+        </div>
+
+        <div class="setting-block">
+          <label class="setting-title" for="colors">色数 <span>画質</span></label>
+          <select id="colors">
+            <option value="64">64色（軽量）</option>
+            <option value="128" selected>128色（標準）</option>
+            <option value="256">256色（高画質）</option>
+          </select>
+        </div>
+
+        <div class="setting-block">
+          <label class="setting-title" for="loop-mode">ループ</label>
+          <select id="loop-mode">
+            <option value="forever" selected>無限ループ</option>
+            <option value="once">1回だけ再生</option>
+          </select>
+        </div>
+      </div>
+
+      <div class="estimate" id="estimate" aria-live="polite">
+        <span class="estimate-icon" aria-hidden="true">i</span>
+        動画を選ぶと、変換の目安が表示されます。
+      </div>
+
+      <div class="action-row">
+        <button class="primary-button" id="convert-button" type="button" disabled>
+          <span>GIFに変換</span>
+          <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        </button>
+      </div>
+
+      <div class="progress-wrap hidden" id="progress-wrap" aria-live="polite">
+        <div class="progress-top"><span id="progress-label">準備中…</span><span id="progress-percent">0%</span></div>
+        <progress id="progress-bar" max="100" value="0">0%</progress>
+        <p class="progress-help" id="progress-help">このタブを閉じずにお待ちください。</p>
+      </div>
+      <p class="error-message hidden" id="error-message" role="alert"></p>
+    </section>
+
+    <section class="panel result-panel hidden" id="result-panel" aria-labelledby="result-title">
+      <div class="section-heading">
+        <div>
+          <p class="step-label">STEP 3</p>
+          <h2 id="result-title">GIFが完成しました</h2>
+        </div>
+        <span class="success-mark" aria-hidden="true">✓</span>
+      </div>
+      <div class="result-preview-wrap">
+        <img id="result-preview" alt="変換したGIFのプレビュー">
+      </div>
+      <div class="result-stats">
+        <div class="stat-item"><span>元の動画</span><strong id="original-size">—</strong></div>
+        <div class="stat-item"><span>完成したGIF</span><strong id="gif-size">—</strong></div>
+        <div class="stat-item"><span>フレーム数</span><strong id="frame-count">—</strong></div>
+      </div>
+      <p class="size-note" id="size-note"></p>
+      <a class="save-button" id="save-gif" href="#" download="converted.gif">
+        <svg viewBox="0 0 24 24" fill="none" aria-hidden="true"><path d="M12 4v11m0 0 4-4m-4 4-4-4M4 18v1.5A1.5 1.5 0 0 0 5.5 21h13a1.5 1.5 0 0 0 1.5-1.5V18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        GIFを保存
+      </a>
+      <p class="save-note">保存ボタンを押すまで、写真アプリやファイルには保存されません。</p>
+      <button class="secondary-button" id="convert-again" type="button">設定を変えてもう一度変換</button>
+    </section>
+
+    <footer class="site-footer">
+      <p>GIF Maker · 端末内で動作するシンプルな変換ツール</p>
+      <p>動画データを送信・保存するサーバー機能はありません。</p>
+    </footer>
+  </main>
+</body>
+</html>
